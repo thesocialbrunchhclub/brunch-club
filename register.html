@@ -1,1 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Reserve your seat — The Art of Taste</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,500;1,600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{ --wine:#A8322E; --wine2:#7A2320; --paper:#F2E7CE; --ink:#3E211D; --mute:#8A6F63; --gold:#A9884F; }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  html,body{ background:var(--paper); color:var(--ink); font-family:'Montserrat','Helvetica Neue',Arial,sans-serif; -webkit-font-smoothing:antialiased; }
+  .sheet{ position:relative; max-width:580px; margin:0 auto; background:var(--paper); border-left:1px solid var(--wine); border-right:1px solid var(--wine); }
+  .sheet::before{ content:''; position:absolute; top:0; bottom:0; left:8px; right:8px; border-left:1px solid var(--wine); border-right:1px solid var(--wine); opacity:.4; pointer-events:none; }
+  .in{ padding:30px 34px 60px; position:relative; z-index:1; }
+  .title{ font-family:'Playfair Display',serif; font-style:italic; font-weight:600; color:var(--wine); font-size:52px; line-height:1; text-align:center; margin-top:14px; }
+  .sub{ text-align:center; color:var(--wine); font-size:11.5px; letter-spacing:.28em; margin-top:18px; text-transform:uppercase; }
+  .tast{ text-align:center; color:var(--mute); font-size:11.5px; letter-spacing:.2em; margin-top:14px; line-height:2; text-transform:uppercase; }
+  .hr{ height:1px; background:rgba(168,50,46,.25); margin:28px 0; }
+  .drow{ text-align:center; padding:4px 0; }
+  .dlabel{ color:var(--mute); font-size:10.5px; letter-spacing:.28em; }
+  .dval{ font-family:'Playfair Display',serif; font-size:22px; color:var(--ink); margin-top:7px; }
+  .dval em{ font-style:italic; color:var(--wine); }
+  .drule{ height:1px; background:rgba(168,50,46,.16); margin:13px auto; max-width:360px; }
+  .inch{ text-align:center; color:var(--mute); font-size:10.5px; letter-spacing:.28em; margin-bottom:16px; }
+  .incl2{ max-width:420px; margin:0 auto; text-align:center; }
+  .i2t{ font-family:'Playfair Display',serif; font-size:20px; color:var(--ink); }
+  .i2d{ font-size:11px; color:var(--mute); letter-spacing:.16em; text-transform:uppercase; margin-top:4px; }
+  .i2div{ color:var(--gold); font-size:9px; margin:13px 0; letter-spacing:.5em; }
+  .makers{ max-width:420px; margin:0 auto; }
+  .maker{ padding:13px 0; border-bottom:1px solid rgba(168,50,46,.12); }
+  .maker:last-child{ border-bottom:none; }
+  .maker .m{ font-family:'Playfair Display',serif; font-size:19px; color:var(--wine); }
+  .maker .r{ font-size:10.5px; color:var(--mute); letter-spacing:.2em; text-transform:uppercase; margin-top:4px; }
+  .reserve{ font-family:'Playfair Display',serif; font-style:italic; font-weight:500; color:var(--wine); font-size:32px; text-align:center; margin:2px 0 6px; }
+  .byreg{ text-align:center; color:var(--mute); font-size:13px; margin-bottom:8px; }
+  form{ text-align:left; }
+  label{ display:block; color:var(--wine2); font-size:11.5px; letter-spacing:.2em; text-transform:uppercase; margin:22px 0 9px; }
+  label .req{ color:var(--wine); } label .opt{ color:var(--mute); font-size:9.5px; letter-spacing:.14em; }
+  .field{ display:flex; align-items:center; border-bottom:1px solid var(--wine); position:relative; }
+  .at{ font-family:'Playfair Display',serif; font-style:italic; color:var(--wine); font-size:19px; margin-right:8px; }
+  input, select{ width:100%; background:transparent; border:none; color:var(--ink); font-size:16px; font-family:'Playfair Display',Georgia,serif; padding:6px 0 11px; }
+  input::placeholder{ color:rgba(138,111,99,.6); }
+  input:focus, select:focus{ outline:none; }
+  select{ appearance:none; -webkit-appearance:none; cursor:pointer; }
+  .field.sel::after{ content:''; position:absolute; right:2px; top:9px; width:7px; height:7px; border-right:1.5px solid var(--wine); border-bottom:1.5px solid var(--wine); transform:rotate(45deg); pointer-events:none; }
+  select option{ color:#000; } select.empty{ color:rgba(138,111,99,.6); }
+  .seats{ display:flex; gap:12px; }
+  .seat{ flex:1; border:1px solid var(--wine); color:var(--ink); font-family:'Playfair Display',serif; font-size:24px; text-align:center; padding:16px 0; cursor:pointer; user-select:none; transition:all .15s; }
+  .seat.active{ background:var(--wine); color:var(--paper); }
+  .btn{ width:100%; margin-top:34px; background:var(--wine); color:var(--paper); border:none; font-family:'Montserrat',sans-serif; font-weight:600; font-size:12.5px; letter-spacing:.24em; text-transform:uppercase; padding:18px; cursor:pointer; }
+  .btn:hover{ opacity:.92; }
+  .note{ text-align:center; color:var(--mute); font-size:12px; margin-top:13px; }
+  .sent{ display:none; text-align:center; color:var(--wine); font-family:'Playfair Display',serif; font-style:italic; font-size:17px; margin-top:14px; }
+  .sent.show{ display:block; }
+  .paysec{ text-align:center; }
+  .pamt{ font-family:'Playfair Display',serif; font-size:28px; color:var(--wine); margin:2px 0 20px; }
+  .paybtn{ display:inline-block; background:var(--wine); color:var(--paper); text-decoration:none; font-family:'Montserrat',sans-serif; font-weight:600; font-size:12.5px; letter-spacing:.24em; text-transform:uppercase; padding:18px 48px; cursor:pointer; transition:opacity .15s; }
+  .paybtn:hover{ opacity:.9; }
+  .qrcard{ background:#fff; border:1px solid var(--wine); padding:18px; display:inline-block; }
+  .qrcard img{ width:208px; height:208px; display:block; }
+  .paylbl{ font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); margin-top:14px; }
+  .steps{ text-align:left; max-width:340px; margin:22px auto 0; font-size:13.5px; line-height:1.7; list-style:none; color:var(--ink); }
+  .foot{ text-align:center; margin-top:38px; color:var(--mute); font-size:11px; letter-spacing:.2em; text-transform:uppercase; }
+</style>
+</head>
+<body>
+  <div class="sheet"><div class="in">
 
+    <div class="title">The Art of<br/>Taste</div>
+    <div class="sub">Immersive Multisensory Experience</div>
+    <div class="tast">Coffee&nbsp; ·&nbsp; Chocolate&nbsp; ·&nbsp; Cheese&nbsp; ·&nbsp; Fragrance&nbsp; ·&nbsp; Brunch&nbsp; ·&nbsp; Wine</div>
+
+    <div class="hr"></div>
+    <div class="drow"><div class="dlabel">THE DAY</div><div class="dval">Sunday, <em>30 August</em></div></div>
+    <div class="drule"></div>
+    <div class="drow"><div class="dlabel">THE HOUR</div><div class="dval">12:30 PM – 2:30 PM</div></div>
+    <div class="drule"></div>
+    <div class="drow"><div class="dlabel">THE SETTING</div><div class="dval">Arts Room · Eldeco Centre, Saket</div></div>
+
+    <div class="hr"></div>
+    <div class="inch">WHAT A SEAT INCLUDES</div>
+    <div class="incl2">
+      <div class="i2t">Four guided tastings</div><div class="i2d">Coffee · Chocolate · Cheese · Fragrance</div>
+      <div class="i2div">◆</div>
+      <div class="i2t">A seated brunch</div>
+      <div class="i2div">◆</div>
+      <div class="i2t">Wine, poured to match</div>
+      <div class="i2div">◆</div>
+      <div class="i2t">A hamper to take home</div><div class="i2d">Curated Delectable Selections</div>
+    </div>
+
+
+    <div class="hr"></div>
+    <div class="reserve">Reserve your seat</div>
+    <div class="byreg">By registration only · limited seats</div>
+
+    <form id="applyForm">
+      <label>Full name <span class="req">*</span></label>
+      <div class="field"><input type="text" name="name" required placeholder="Your name"/></div>
+      <label>Email <span class="req">*</span></label>
+      <div class="field"><input type="email" name="email" required placeholder="you@email.com"/></div>
+      <label>Phone / WhatsApp <span class="req">*</span></label>
+      <div class="field"><input type="tel" name="phone" required placeholder="+91 ········"/></div>
+      <label>Instagram handle</label>
+      <div class="field"><span class="at">@</span><input type="text" name="instagram" placeholder="yourhandle"/></div>
+      <label>Address <span class="req">*</span></label>
+      <div class="field"><input type="text" name="address" required placeholder="House, street, area, city"/></div>
+      <label>Age group <span class="req">*</span></label>
+      <div class="field sel"><select name="age" required class="empty"><option value="" disabled selected>Select one</option><option>Under 25</option><option>25–34</option><option>35–44</option><option>45+</option></select></div>
+      <label>Occupation <span class="opt">— optional</span></label>
+      <div class="field"><input type="text" name="occupation" placeholder="What you do"/></div>
+      <label>Number of seats</label>
+      <div class="seats" id="seats"><div class="seat active" data-v="1">1</div><div class="seat" data-v="2">2</div><div class="seat" data-v="3">3</div><div class="seat" data-v="4">4</div></div>
+      <input type="hidden" name="seats" id="seatsInput" value="1"/>
+      <label>Dietary preference <span class="req">*</span></label>
+      <div class="field sel"><select name="dietary" required class="empty"><option value="" disabled selected>Select one</option><option>No restrictions</option><option>Vegetarian</option><option>Vegan</option><option>Jain</option><option>Eggetarian</option><option>Non-vegetarian</option></select></div>
+      <label>Allergies or notes <span class="opt">— optional</span></label>
+      <div class="field"><input type="text" name="allergies" placeholder="So we can tailor your tasting"/></div>
+      <label>Do you drink wine? <span class="req">*</span></label>
+      <div class="field sel"><select name="wine" required class="empty"><option value="" disabled selected>Select one</option><option>Yes, please</option><option>Occasionally</option><option>No, thank you</option></select></div>
+      <label>What draws you to The Art of Taste? <span class="req">*</span></label>
+      <div class="field sel"><select name="why" required class="empty"><option value="" disabled selected>Select one</option><option>Curated food &amp; drink</option><option>Meeting curious people</option><option>The experience &amp; aesthetic</option><option>All of the above</option></select></div>
+      <label>How did you hear about us? <span class="req">*</span></label>
+      <div class="field sel"><select name="source" required class="empty"><option value="" disabled selected>Select one</option><option>Instagram</option><option>A friend</option><option>Bili Hu</option><option>The Spotted Cow</option><option>Khet</option><option>Arts Room</option><option>Other</option></select></div>
+      <button class="btn" type="submit">Submit registration</button>
+      <div class="note">A seat is ₹5,000 · confirmed on payment</div>
+      <div class="sent" id="sent">Registration received — tap Pay &amp; Confirm below to secure your seat.</div>
+    </form>
+
+    <div class="hr" style="margin-top:42px;"></div>
+    <div class="reserve">Secure your seat</div>
+    <div class="byreg">Pay to confirm · cards, UPI, netbanking &amp; wallets</div>
+    <div class="paysec">
+      <div class="pamt">₹5,000 · per seat</div>
+      <a class="paybtn" id="payLink" href="https://rzp.io/rzp/Kwzjihv1" target="_blank" rel="noopener">Pay &amp; Confirm Seat</a>
+      <div class="paylbl">Secure payment · Cards · UPI · Netbanking · Wallets</div>
+      <ol class="steps">
+        <li>1 — Fill in your details above and tap <b>Submit registration</b>.</li>
+        <li>2 — Tap <b>Pay &amp; Confirm Seat</b> and pay ₹5,000 by card, UPI or netbanking.</li>
+        <li>3 — Booking more than one seat? Complete the payment once for each seat.</li>
+        <li>4 — Your seat is confirmed once payment is received — check your email.</li>
+      </ol>
+    </div>
+
+    <div class="foot">@thesocialbrunchhclub</div>
+
+  </div></div>
+<script>
+  var seats=document.querySelectorAll('.seat'), seatsInput=document.getElementById('seatsInput');
+  seats.forEach(function(s){ s.addEventListener('click', function(){ seats.forEach(function(x){ x.classList.remove('active'); }); s.classList.add('active'); seatsInput.value=s.getAttribute('data-v'); });});
+  document.querySelectorAll('select').forEach(function(sel){ sel.addEventListener('change',function(){ if(sel.value) sel.classList.remove('empty'); }); });
+  var ACCESS_KEY="742a8e11-d895-465c-8666-ac92e5e367fb";
+  var form=document.getElementById('applyForm');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var btn=form.querySelector('.btn'); btn.textContent='Sending…'; btn.disabled=true;
+    var data=Object.fromEntries(new FormData(form).entries());
+    data.access_key=ACCESS_KEY; data.subject="New registration — The Art of Taste"; data.from_name="The Social Brunch Club";
+    function done(){ btn.textContent='Registration sent'; document.getElementById('sent').classList.add('show'); document.querySelector('.paysec').scrollIntoView({behavior:'smooth'}); }
+    fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(data)}).then(function(r){return r.json();}).then(function(){ done(); }).catch(function(){ done(); });
+  });
+</script>
+</body>
+</html>
